@@ -1,17 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import { createStore } from './redux'
+function reducer(state, action) {
+  switch (action.type) {
+    case 'ADD':
+      return { number: state.number + 1 }
+    case 'MINUS':
+      return { number: state.number - 1 }
+    default:
+      return state
+  }
+}
+const store = createStore(reducer, { number: 0 })
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const unFn = store.subscribe(render)
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const Counter = () => {
+  return <div>
+    {store.getState().number}
+    <button onClick={() => store.dispatch({ type: 'ADD' })}>+</button>
+    <button onClick={() => store.dispatch({ type: 'MINUS' })}>-</button>
+    <button onClick={unFn}>kkk</button>
+  </div>
+}
+
+function render() {
+  ReactDOM.render(
+    <React.StrictMode>
+      <Counter />
+    </React.StrictMode>,
+    document.getElementById('root')
+  )
+}
+render()
+
